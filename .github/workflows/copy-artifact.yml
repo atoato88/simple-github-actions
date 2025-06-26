@@ -20,7 +20,7 @@ jobs:
       with:
         name: processed file01
         path: test-replaced.md
-    - name: Git setting
+    - name: Git commit and push
       run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.example.com"
@@ -31,8 +31,8 @@ jobs:
             git commit -m "feat(generated): Add new generated report"
             git push
           }
-      env:
-          GITHUB_TOKEN: ${{ secrets.GH_API_TOKEN }}
+      #env:
+      #    GITHUB_TOKEN: ${{ secrets.GH_API_TOKEN }}
     - name: List files in the repository
       run: |
         ls ${{ github.workspace }}
