@@ -1,0 +1,45 @@
+name: Copy Artifact Sample
+run-name: Copy Artifact Sample Job
+on:
+  push:
+    branches:
+    - main
+    paths-ignore:
+    - 'dest/**' # 注意: 生成ファイルが含まれるディレクトリへのプッシュではトリガーしない（無限ループ防止）
+  workflow_dispatch: # 手動実行も可能にする
+jobs:
+  Copy-Artifact:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "Start job"
+    - name: Check out repository code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GH_API_TOKEN }}
+    - name: Replace text
+      run: |
+        sed -e "s;URL_STR;https://google.com;g" src/test.md > test-replaced.md
+        echo >> test-replaced.md
+        date >> test-replaced.md
+        mkdir -p dest
+        cp test-replaced.md dest/
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: processed file01
+        path: test-replaced.md
+    - name: Git setting
+      run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.example.com"
+    - name: Git commit and push
+      run: |
+        git add dest/test-replaced.md
+        git diff --quiet && git diff --cached --quiet || {
+            git commit -m "feat(generated): Add new generated report"
+            git push
+          }
+    - name: List files in the repository
+      run: |
+        ls ${{ github.workspace }}
+    - run: echo "🍏 This job's status is ${{ job.status }}."
