@@ -1,0 +1,22 @@
+name: Copy Artifact Sample
+run-name: Copy Artifact Sample Job
+on: [push]
+jobs:
+  Copy-Artifact:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "Start job"
+    - name: Check out repository code
+      uses: actions/checkout@v4
+    - name: Replace text
+      run: |
+        sed -e s;URL_STR;https://google.com;g src/test.md > test-replaced.md
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: test replaced
+        path: test-replaced.md
+    - name: List files in the repository
+      run: |
+        ls ${{ github.workspace }}
+    - run: echo "🍏 This job's status is ${{ job.status }}."
