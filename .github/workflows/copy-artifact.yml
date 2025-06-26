@@ -14,8 +14,8 @@ jobs:
     - run: echo "Start job"
     - name: Check out repository code
       uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GH_API_TOKEN }}
+      #with:
+      #  token: ${{ secrets.GH_API_TOKEN }}
     - name: Replace text
       run: |
         sed -e "s;URL_STR;https://google.com;g" src/test.md > test-replaced.md
