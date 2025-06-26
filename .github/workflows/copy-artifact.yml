@@ -11,11 +11,28 @@ jobs:
     - name: Replace text
       run: |
         sed -e "s;URL_STR;https://google.com;g" src/test.md > test-replaced.md
+        echo >> test-replaced.md
+        date >> test-replaced.md
+        mkdir -p dest
+        cp test-replaed.md dest/
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: test replaced
+        name: processed file01
         path: test-replaced.md
+    - name: Git setting
+      run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.example.com"
+    - name: Git setting
+      run: |
+        git add dest/test-replaced.md
+        git diff --quiet && git diff --cached --quiet || {
+            git commit -m "feat(generated): Add new generated report"
+            git push
+          }
+      env:
+          GITHUB_TOKEN: ${{ secrets.GH_API_TOKEN }}
     - name: List files in the repository
       run: |
         ls ${{ github.workspace }}
